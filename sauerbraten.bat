@@ -9,4 +9,4 @@ IF /I "%PROCESSOR_ARCHITEW6432%" == "amd64" (
     set SAUER_BIN=bin64
 )
 
-start %SAUER_BIN%\sauerbraten.exe "-qhome" -glog.txt -k"C:\Program Files (x86)\Sauerbraten\packages" %*
+start %SAUER_BIN%\sauerbraten.exe "-qhome" -glog.txt %*
