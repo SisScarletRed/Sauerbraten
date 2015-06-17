@@ -1,0 +1,3 @@
+alt_pressed = 0
+bind LALT [ alt_pressed = 1; onrelease [ alt_pressed = 0 ] ]
+bind F4 [ if $alt_pressed quit ]
