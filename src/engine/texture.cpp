@@ -3486,7 +3486,7 @@ void screenshot(char *filename, bool justfilename, int dir)
     glPixelStorei(GL_PACK_ALIGNMENT, texalign(image.data, screen->w, 3));
     glReadPixels(0, 0, screen->w, screen->h, GL_RGB, GL_UNSIGNED_BYTE, image.data);
     saveimage(path(buf), format, image, true);
-    if(debugquality) conoutf("saved screenshot %s", path(buf));
+    conoutf("saved screenshot %s", path(buf));
 }
 ICOMMAND(screenshot, "s", (char *name), screenshot(name, false, 0));
 
