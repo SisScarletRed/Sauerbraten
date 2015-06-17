@@ -4,3 +4,4 @@ exec cgrade		// color grading shader
 execdir = [loopfiles f $arg1 $arg2 [exec (format "%1/%2.%3" $arg1 $f $arg2)]]
 
 execdir data/gamescripts cfg
+execdir home/packages/fonts cfg

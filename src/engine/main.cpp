@@ -173,7 +173,7 @@ void restorebackground()
     renderbackground(backgroundcaption[0] ? backgroundcaption : NULL, backgroundmapshot, backgroundmapname[0] ? backgroundmapname : NULL, backgroundmapinfo, true);
 }
 
-string backgroundimage;
+string backgroundimg;
 string backgroundmap;
 
 VARP(bg3d, 0, 1, 1);
@@ -233,6 +233,7 @@ void spinbox()
 }
 
 VARP(backgroundcolor, 0, 0, 0xFFFFFF);
+SVARP(backgroundimage, "background.png");
 
 void renderbackground(const char *caption, Texture *mapshot, const char *mapname, const char *mapinfo, bool restore, bool force)
 {
@@ -264,12 +265,12 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
             if(mapshot && mapshot!=notexture)
             {
                 defformatstring(mshot)("<blur:4/3/0>packages/base/%s.jpg", mapname);
-                copystring(backgroundimage, mshot);
+                copystring(backgroundimg, mshot);
             }
             else
             {
-                copystring(backgroundimage, "");
-                settexture("<blur:4/3/0>data/background.png", 0);
+                copystring(backgroundimg, "");
+                settexture(tempformatstring("<blur:4/3/0>data/%s", backgroundimage), 0);
                 glBegin(GL_TRIANGLE_STRIP);
                 glTexCoord2f(0, 0); glVertex2f(0, 0);
                 glTexCoord2f(1, 0); glVertex2f(w, 0);
@@ -366,7 +367,7 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
     loopi(restore ? 1 : 3)
     {
         glColor3f(1, 1, 1);
-        settexture(force ? "data/background.png" : "<blur:4/3/0>data/background.png", 0);
+        settexture(tempformatstring("%sdata/%s", force ? "" : "<blur:4/3/0>", backgroundimage), 0);
         glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(0, 0); glVertex2f(0, 0);
         glTexCoord2f(1, 0); glVertex2f(w, 0);
@@ -391,12 +392,12 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
             if(mapshot && mapshot!=notexture)
             {
                 defformatstring(mshot)("<blur:4/3/0>packages/base/%s.jpg", mapname);
-                copystring(backgroundimage, mshot);
+                copystring(backgroundimg, mshot);
             }
             else
             {
-                copystring(backgroundimage, "");
-                settexture("<blur:4/3/0>data/background.png", 0);
+                copystring(backgroundimg, "");
+                settexture(tempformatstring("<blur:4/3/0>data/%s", backgroundimage), 0);
                 glBegin(GL_TRIANGLE_STRIP);
                 glTexCoord2f(0, 0); glVertex2f(0, 0);
                 glTexCoord2f(1, 0); glVertex2f(w, 0);
@@ -465,7 +466,7 @@ void renderprogress(float bar, const char *text, GLuint tex, bool background)   
     defaultshader->set();
     glColor3f(1, 1, 1);
 
-    if(!settexture(backgroundimage, 0)) settexture("<blur:4/3/0>data/background.png", 0);
+    if(!settexture(backgroundimg, 0)) settexture(tempformatstring("<blur:4/3/0>data/%s", backgroundimage), 0);
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0); glVertex2f(0, 0);
     glTexCoord2f(1, 0); glVertex2f(w, 0);
@@ -880,7 +881,7 @@ void resetgl()
     inbetweenframes = false;
     if(!reloadtexture(*notexture) ||
        !reloadtexture("data/logo.png") ||
-       !reloadtexture("data/background.png") ||
+       !reloadtexture(tempformatstring("data/%s", backgroundimage)) ||
        !reloadtexture("data/mapshot_frame.png") ||
        !reloadtexture("data/loading_frame.png") ||
        !reloadtexture("data/loading_bar.png"))

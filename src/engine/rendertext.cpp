@@ -107,9 +107,8 @@ bool setfont(const char *name)
     curfont = f;
     return true;
 }
-ICOMMAND(setfont, "s", (const char *name), setfont(name));
 
-SVARFP(deffont, "default", setfont(deffont);)
+SVARFP(fontstyle, "default", setfont(fontstyle);)
 ICOMMAND(enumfonts, "s", (char *last),
 {
     bool retnext = false;
