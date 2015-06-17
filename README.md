@@ -8,7 +8,6 @@ Because this is not yet tested fully, there _might_ be bugs that will crash the 
 
 ## Main Features ##
 
-* NO SDL2
 * Improved frame drawing and input handling
 * Extensive extinfo usage
 * GUI Updates
@@ -51,5 +50,5 @@ Keep up-to-date:
 > 4. Make sure to open your Github client regularly to check for updates  
 
 Other:
-> Copy the _packages/_ folder of Sauerbraten in the folder this Repo is cloned/installed to. A recent SVN version would be the best..  
+> Copy the _packages/_ folder of Sauerbraten in the folder this Repo is cloned/installed to. A recent SVN version would be the best, as the brushes are in a new folder there, which QuEd uses. If you don't need brushes, be prepared for some warnings when opening QuEd, but everything else should still work just fine.  
 > **IF** you installed the files from the SVN folder, make sure you the maps are still the ones from the Collect Edition release. If not, just copy the _packages/base/_ folder of the release in the folder this repo was cloned/extracted to
