@@ -2051,7 +2051,7 @@ namespace game
                 mapchanged = true;
                 if(getint(p)) entities::spawnitems();
                 else senditemstoserver = false;
-                if(!welcomepacket && demo::demoauto && !(demo::demoautonotlocal && multiplayer(false))) demo::setup();
+                if(!welcomepacket && demo::demoauto && (!demo::demoautonotlocal || multiplayer(false))) demo::setup();
                 break;
 
             case N_FORCEDEATH:
@@ -2793,7 +2793,7 @@ namespace game
                 conoutf("\f3NETWORK ERROR: unkown type");
                 return;
         }
-        if(welcomepacket && demo::demoauto && !(demo::demoautonotlocal && !multiplayer(false))) demo::setup();
+        if(welcomepacket && demo::demoauto && (!demo::demoautonotlocal || multiplayer(false))) demo::setup();
         if(!skipdemorecord) demo::packet(1, p);
     }
 
