@@ -53,10 +53,31 @@ QFVARP(guihoverinfodelay, "delay in seconds when the helper boxes are to be show
 QVARP(guihoverinfoscale, "textscale of the helper boxes", 3, 7, 20);
 QFVARP(guiscalespeed, "how fast the gui will scale in", 0, 5, 100);
 QHVARP(guiactivecolor, "color of active tab", 0, 0x00FFFF, 0xFFFFFF);
+QSVARFP(guitheme, "theme of the guiskin and the guioverlays", "flat", extern void cleanupguitex(); cleanupguitex());
 
 char *_hoverinfo;
 int hoverx, hovery,
     hoverstart;
+
+Texture *themeload(const char *tex)
+{
+    Texture *t = NULL;
+    strtool p;
+    p.append("data");
+    p.add('/');
+    if(strcmp(guitheme, "default"))
+    {
+        p.append("themes");
+        p.add('/');
+        p.append(guitheme);
+        p.add('/');
+    }
+    p.append(tex);
+
+    if((t = textureload(p.str(), 3, true, false)) == notexture)
+        t = textureload(tempformatstring("data/%s", tex), 3, true, false);
+    return t;
+}
 
 struct gui : g3d_gui
 {
@@ -374,7 +395,7 @@ struct gui : g3d_gui
                     glEnable(GL_TEXTURE_2D);
                     defaultshader->set();
                 }
-                if(!overlaytex) overlaytex = textureload("data/guioverlay.png", 3);
+                if(!overlaytex) overlaytex = themeload("guioverlay.png");
                 glColor3fv(light.v);
                 glBindTexture(GL_TEXTURE_2D, overlaytex->id);
                 rect_(xi, yi, xs, ys, 0);
@@ -439,7 +460,7 @@ struct gui : g3d_gui
                     glEnable(GL_TEXTURE_2D);
                     defaultshader->set();
                 }
-                if(!overlaytex) overlaytex = textureload("data/guioverlay.png", 3);
+                if(!overlaytex) overlaytex = themeload("guioverlay.png");
                 glColor3fv(light.v);
                 glBindTexture(GL_TEXTURE_2D, overlaytex->id);
                 rect_(xi, yi, xs, ys, 0);
@@ -732,7 +753,7 @@ struct gui : g3d_gui
 
         if(overlaid)
         {
-            if(!overlaytex) overlaytex = textureload("data/guioverlay.png", 3);
+            if(!overlaytex) overlaytex = themeload("guioverlay.png");
             glBindTexture(GL_TEXTURE_2D, overlaytex->id);
             glColor3fv(light.v);
             rect_(x, y, xs, ys, 0);
@@ -818,7 +839,7 @@ struct gui : g3d_gui
         defaultshader->set();
         if(overlaid)
         {
-            if(!overlaytex) overlaytex = textureload("data/guioverlay.png", 3);
+            if(!overlaytex) overlaytex = themeload("guioverlay.png");
             glBindTexture(GL_TEXTURE_2D, overlaytex->id);
             glColor3fv(light.v);
             rect_(x, y, xs, ys, 0);
@@ -1006,13 +1027,13 @@ struct gui : g3d_gui
         return layout(w, FONTH);
     }
 
-    static Texture *skintex, *overlaytex, *slidertex;
+    static Texture *skintex, *overlaytex;
     static const int skinx[], skiny[];
     static const struct patch { ushort left, right, top, bottom; uchar flags; } patches[];
 
     static void drawskin(int x, int y, int gapw, int gaph, int start, int n, int passes = 1, const vec &light = vec(1, 1, 1), float alpha = 0.80f)//int vleft, int vright, int vtop, int vbottom, int start, int n)
     {
-        if(!skintex) skintex = textureload("data/guiskin.png", 3);
+        if(!skintex) skintex = themeload("guiskin.png");
         glBindTexture(GL_TEXTURE_2D, skintex->id);
         int gapx1 = INT_MAX, gapy1 = INT_MAX, gapx2 = INT_MAX, gapy2 = INT_MAX;
         float wscale = 1.0f/(SKIN_W*SKIN_SCALE), hscale = 1.0f/(SKIN_H*SKIN_SCALE);
@@ -1310,7 +1331,8 @@ struct gui : g3d_gui
     }
 };
 
-Texture *gui::skintex = NULL, *gui::overlaytex = NULL, *gui::slidertex = NULL;
+Texture *gui::skintex = NULL, *gui::overlaytex = NULL;
+void cleanupguitex() { gui::skintex = gui::overlaytex = NULL; }
 
 //chop skin into a grid
 const int gui::skiny[] = {0, 7, 21, 34, 43, 48, 56, 104, 111, 117, 128},
