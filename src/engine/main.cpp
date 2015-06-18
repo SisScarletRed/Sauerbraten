@@ -4,10 +4,9 @@
 #include "event.h"
 #include "extinfo.h"
 #include "ipignore.h"
+#include "quedversion.h"
 
-#define CLIENTVERSION "v0.1-alpha"
-ICOMMAND(getclientversion, "", (), result(CLIENTVERSION));
-
+ICOMMAND(getclientversion, "", (), result(getfullversionname()));
 QICOMMAND(delfile, "delete the file (win only)", "file,msg", "si", (const char *file, int *msg),
 {
 #ifdef WIN32
@@ -16,7 +15,7 @@ QICOMMAND(delfile, "delete the file (win only)", "file,msg", "si", (const char *
     if(msg || debugquality) conoutf("file %s deleted with status %d", file, tmp);
     intret(tmp);
 #endif // WIN32
-    conoutf("\f3error: function only available on windows");
+    conoutf("\f3error: function only available on windows yet");
     intret(-1);
 });
 
@@ -1638,7 +1637,7 @@ int main(int argc, char **argv)
     inputgrab(grabinput = true);
     ignoremousemotion();
 
-    conoutf("\f2Quality \f1Edition \f3%s\f7, \f0%s", CLIENTVERSION, is64bitpointer() ? "64bit" : "32bit");
+    conoutf("\f2Quality \f1Edition \f3%s\f7, \f0%s", getfullversionname(), is64bitpointer() ? "64bit" : "32bit");
     #ifndef WIN32
     conoutf("\f3Be careful: This client is only tested on windows.. \n\tI will take no accuses for anything that might break on your PC! (e.g. system cmds..)");
     #endif // WIN32

@@ -52,7 +52,7 @@
 				</Environment>
 			</Target>
 			<Target title="client32">
-				<Option output="../../bin/sauerbraten32.exe" prefix_auto="0" extension_auto="0" />
+				<Option output="../../bin32/sauerbraten32.exe" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="../../" />
 				<Option object_output=".objs/client32" />
 				<Option type="0" />
@@ -89,7 +89,7 @@
 					<Add library="enet" />
 					<Add library="ws2_32" />
 					<Add library="winmm" />
-					<Add directory="../../bin" />
+					<Add directory="../../bin32" />
 					<Add directory="../lib" />
 				</Linker>
 				<Environment>
@@ -223,6 +223,7 @@
 		<Unit filename="../shared/geom.h" />
 		<Unit filename="../shared/iengine.h" />
 		<Unit filename="../shared/igame.h" />
+		<Unit filename="../shared/quedversion.h" />
 		<Unit filename="../shared/stream.cpp" />
 		<Unit filename="../shared/tools.cpp" />
 		<Unit filename="../shared/tools.h" />
