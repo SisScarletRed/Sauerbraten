@@ -11,19 +11,40 @@ snoutrailgunpm = 1
 addsnoutrailgun = [ addzip "models/snout_railgun" ]
 removesnoutrailgun = [ removezip "models/snout_railgun" ]
 updatesnoutrailgun = [ if $snoutrailgun [ addzip "models/snout_railgun" ] [ removezip "models/snout_railgun" ] ]
-if $snoutrailgun addsnoutrailgun
 
 createine ccsuperhero 0
 ccsuperheropm = 4
 addccsuperhero = [ addzip "models/cc_superhero_hudguns" ]
 removeccsuperhero = [ removezip "models/cc_superhero_hudguns" ]
-updateccsuperhero = [ if $ccsuperhero [ addzip "models/cc_superhero_hudguns" ] [ removezip "models/cc_superhero_hudguns" ] ]
-if $ccsuperhero addccsuperhero
+updateccsuperhero = [ if $ccsuperhero addccsuperhero removeccsuperhero ]
+
+createine inkyalien 0
+inkyalienpm = 3
+addinkyalien = [ addzip "models/inky_alien_hudguns" ]
+removeinkyalien = [ removezip "models/inky_alien_hudguns" ]
+removeinkyalien = [ removezip "models/inky_alien_hudguns" ]
+updateinkyalien = [ if $inkyalien addinkyalien removeinkyalien ]
+
+createine transparentguns 0
+transparentgunspm = -1
+addtransparentguns = [ addzip "models/transparent_guns" ]
+removetransparentguns = [ removezip "models/transparent_guns" ]
+updatetransparentguns = [ if $transparentguns addtransparentguns removetransparentguns ]
 
 playermodelchange = [
 	if (!= $playermodel $snoutrailgunpm) removesnoutrailgun
 	if (!= $playermodel $ccsuperheropm) removeccsuperhero
+	if (!= $playermodel $inkyalienpm) removeinkyalien
 	
 	if (= $playermodel $snoutrailgunpm) updatesnoutrailgun
 	if (= $playermodel $ccsuperheropm) updateccsuperhero
+	if (= $playermodel $inkyalienpm) updateinkyalien
+	
+	if (&& (&& (|| (!= $playermodel $snoutrailgunpm) (! $snoutrailgun)) (|| (!= $playermodel $ccsuperheropm) (! $ccsuperhero))) (|| (!= $playermodel $inkyalienpm) (! $inkyalien))) [
+		updatetransparentguns
+	] [
+		removetransparentguns
+	]
 ]
+
+playermodelchange
