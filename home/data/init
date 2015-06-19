@@ -5,3 +5,25 @@ execdir = [loopfiles f $arg1 $arg2 [exec (format "%1/%2.%3" $arg1 $f $arg2)]]
 
 execdir data/gamescripts cfg
 execdir home/packages/fonts cfg
+
+createine snoutrailgun 0
+snoutrailgunpm = 1
+addsnoutrailgun = [ addzip "models/snout_railgun" ]
+removesnoutrailgun = [ removezip "models/snout_railgun" ]
+updatesnoutrailgun = [ if $snoutrailgun [ addzip "models/snout_railgun" ] [ removezip "models/snout_railgun" ] ]
+if $snoutrailgun addsnoutrailgun
+
+createine ccsuperhero 0
+ccsuperheropm = 4
+addccsuperhero = [ addzip "models/cc_superhero_hudguns" ]
+removeccsuperhero = [ removezip "models/cc_superhero_hudguns" ]
+updateccsuperhero = [ if $ccsuperhero [ addzip "models/cc_superhero_hudguns" ] [ removezip "models/cc_superhero_hudguns" ] ]
+if $ccsuperhero addccsuperhero
+
+playermodelchange = [
+	if (!= $playermodel $snoutrailgunpm) removesnoutrailgun
+	if (!= $playermodel $ccsuperheropm) removeccsuperhero
+	
+	if (= $playermodel $snoutrailgunpm) updatesnoutrailgun
+	if (= $playermodel $ccsuperheropm) updateccsuperhero
+]
