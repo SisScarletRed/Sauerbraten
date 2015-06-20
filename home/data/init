@@ -8,33 +8,32 @@ execdir home/packages/fonts cfg
 
 createine fixitpmc 0
 fixitpmcpm = 0
-addfixitpmc = [ addzip "models/fixit_hudguns" ]
-removefixitpmc = [ removezip "models/fixit_hudguns" ]
+addfixitpmc = [ addzip "models/fixit_hudguns" "" "" 1 ]
+removefixitpmc = [ removezip "models/fixit_hudguns" 1 ]
 updatefixitpmc = [ if $fixitpmc addfixitpmc removefixitpmc ]
 
 createine snoutrailgun 0
 snoutrailgunpm = 1
-addsnoutrailgun = [ addzip "models/snout_railgun" ]
-removesnoutrailgun = [ removezip "models/snout_railgun" ]
+addsnoutrailgun = [ addzip "models/snout_railgun" "" "" 1 ]
+removesnoutrailgun = [ removezip "models/snout_railgun" 1 ]
 updatesnoutrailgun = [ if $snoutrailgun addsnoutrailgun removesnoutrailgun ]
 
 createine inkyalien 0
 inkyalienpm = 3
-addinkyalien = [ addzip "models/inky_alien_hudguns" ]
-removeinkyalien = [ removezip "models/inky_alien_hudguns" ]
-removeinkyalien = [ removezip "models/inky_alien_hudguns" ]
+addinkyalien = [ addzip "models/inky_alien_hudguns" "" "" 1 ]
+removeinkyalien = [ removezip "models/inky_alien_hudguns" 1 ]
 updateinkyalien = [ if $inkyalien addinkyalien removeinkyalien ]
 
 createine ccsuperhero 0
 ccsuperheropm = 4
-addccsuperhero = [ addzip "models/cc_superhero_hudguns" ]
-removeccsuperhero = [ removezip "models/cc_superhero_hudguns" ]
+addccsuperhero = [ addzip "models/cc_superhero_hudguns" "" "" 1 ]
+removeccsuperhero = [ removezip "models/cc_superhero_hudguns" 1 ]
 updateccsuperhero = [ if $ccsuperhero addccsuperhero removeccsuperhero ]
 
-createine transparentguns 0
+createine transparentguns 1
 transparentgunspm = -1
-addtransparentguns = [ addzip "models/transparent_guns" ]
-removetransparentguns = [ removezip "models/transparent_guns" ]
+addtransparentguns = [ addzip "models/transparent_guns" "" "" 1 ]
+removetransparentguns = [ removezip "models/transparent_guns" 1 ]
 updatetransparentguns = [ if $transparentguns addtransparentguns removetransparentguns ]
 
 playermodelchange = [
@@ -60,8 +59,8 @@ playermodelchange
 
 createine wwiiproj 0
 wwiiprojpm = -1
-addwwiiproj = [ addzip "models/wwii_projectiles" ]
-removewwiiproj = [ removezip "models/wwii_projectiles" ]
+addwwiiproj = [ addzip "models/wwii_projectiles" "" "" 1 ]
+removewwiiproj = [ removezip "models/wwii_projectiles" 1 ]
 updatewwiiproj = [ if $wwiiproj addwwiiproj removewwiiproj ]
 
 projchange = [

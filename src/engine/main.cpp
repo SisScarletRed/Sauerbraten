@@ -5,6 +5,7 @@
 #include "extinfo.h"
 #include "ipignore.h"
 #include "quedversion.h"
+#include "whois.h"
 
 ICOMMAND(getclientversion, "", (), result(getfullversionname()));
 QICOMMAND(delfile, "delete the file (win only)", "file,msg", "si", (const char *file, int *msg),
@@ -43,6 +44,7 @@ void quit(bool restart = false)  // normal exit
     event::run(event::SHUTDOWN);
     ipignore::shutdown();
     game::writestats();
+    whois::writewhoisdb();
     extern void writeinitcfg();
     writeinitcfg();
     writeservercfg();
@@ -1628,6 +1630,7 @@ int main(int argc, char **argv)
     installcommands();
     ipignore::startup();
     game::loadstats();
+    whois::loadwhoisdb();
 
     logoutf("init: mainloop");
 

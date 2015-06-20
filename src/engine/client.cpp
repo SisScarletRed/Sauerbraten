@@ -206,6 +206,7 @@ QCOMMAND(reconnect, "reconnect to the last server", "(password)", "s");
 QICOMMAND(disconnect, "disconnect from your server", "local", "i", (int *local), trydisconnect(*local != 0));
 QICOMMAND(localconnect, "connect to a local server", "", "", (), { if(!isconnected()) localconnect(); });
 QICOMMAND(localdisconnect, "disconnect from a local server", "", "", (), { if(haslocalclients()) localdisconnect(); });
+ICOMMAND(islocal, "", (), intret(haslocalclients() ? 1 : 0));
 
 void sendclientpacket(ENetPacket *packet, int chan)
 {

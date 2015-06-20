@@ -11,7 +11,7 @@ namespace game
     VARP(ragdoll, 0, 1, 1);
     VARP(ragdollmillis, 0, 10000, 300000);
     VARP(ragdollfade, 0, 1000, 300000);
-    VARFP(playermodel, 0, 1, 4, changedplayermodel());
+    VARFP(playermodel, 0, 1, 4, changedplayermodel(); execute("playermodelchange");)
     VARP(forceplayermodels, 0, 0, 1);
     VARP(hidedead, 0, 0, 1);
 

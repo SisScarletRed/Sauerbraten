@@ -262,7 +262,7 @@ static void mountzip(ziparchive &arch, vector<zipfile> &files, const char *mount
     }
 }
 
-bool addzip(const char *name, const char *mount = NULL, const char *strip = NULL)
+bool addzip(const char *name, const char *mount = NULL, const char *strip = NULL, bool nomsg = false)
 {
     string pname;
     copystring(pname, name);
@@ -273,21 +273,21 @@ bool addzip(const char *name, const char *mount = NULL, const char *strip = NULL
     ziparchive *exists = findzip(pname);
     if(exists)
     {
-        conoutf(CON_ERROR, "already added zip %s", pname);
+        if(!nomsg) conoutf(CON_ERROR, "already added zip %s", pname);
         return true;
     }
 
     FILE *f = fopen(findfile(pname, "rb"), "rb");
     if(!f)
     {
-        conoutf(CON_ERROR, "could not open file %s", pname);
+        if(!nomsg) conoutf(CON_ERROR, "could not open file %s", pname);
         return false;
     }
     zipdirectoryheader h;
     vector<zipfile> files;
     if(!findzipdirectory(f, h) || !readzipdirectory(pname, f, h.entries, h.offset, h.size, files))
     {
-        conoutf(CON_ERROR, "could not read directory in zip %s", pname);
+        if(!nomsg) conoutf(CON_ERROR, "could not read directory in zip %s", pname);
         fclose(f);
         return false;
     }
@@ -298,11 +298,11 @@ bool addzip(const char *name, const char *mount = NULL, const char *strip = NULL
     mountzip(*arch, files, mount, strip);
     archives.add(arch);
 
-    conoutf("added zip %s", pname);
+    if(!nomsg) conoutf("added zip %s", pname);
     return true;
 }
 
-bool removezip(const char *name)
+bool removezip(const char *name, bool nomsg = false)
 {
     string pname;
     copystring(pname, name);
@@ -312,15 +312,15 @@ bool removezip(const char *name)
     ziparchive *exists = findzip(pname);
     if(!exists)
     {
-        conoutf(CON_ERROR, "zip %s is not loaded", pname);
+        if(!nomsg) conoutf(CON_ERROR, "zip %s is not loaded", pname);
         return false;
     }
     if(exists->openfiles)
     {
-        conoutf(CON_ERROR, "zip %s has open files", pname);
+        if(!nomsg) conoutf(CON_ERROR, "zip %s has open files", pname);
         return false;
     }
-    conoutf("removed zip %s", exists->name);
+    if(!nomsg) conoutf("removed zip %s", exists->name);
     archives.removeobj(exists);
     delete exists;
     return true;
@@ -581,7 +581,7 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
 }
 
 #ifndef STANDALONE
-ICOMMAND(addzip, "sss", (const char *name, const char *mount, const char *strip), addzip(name, mount[0] ? mount : NULL, strip[0] ? strip : NULL));
-ICOMMAND(removezip, "s", (const char *name), removezip(name));
+QICOMMAND(addzip, "adds a zip file", "name,mount,strip,nomsg", "sssi", (const char *name, const char *mount, const char *strip, int *nomsg), addzip(name, mount[0] ? mount : NULL, strip[0] ? strip : NULL, *nomsg);)
+QICOMMAND(removezip, "removes a zip file", "name,nomsg", "si", (const char *name, int *nomsg), removezip(name, *nomsg);)
 #endif
 
