@@ -5,7 +5,7 @@
 #include "extinfo.h"
 #include "ipignore.h"
 #include "quedversion.h"
-#include "whois.h"
+#include "extinfo.h"
 
 ICOMMAND(getclientversion, "", (), result(getfullversionname()));
 QICOMMAND(delfile, "delete the file (win only)", "file,msg", "si", (const char *file, int *msg),

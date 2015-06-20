@@ -3126,6 +3126,19 @@ namespace game
 
     VARP(crosshairinfo, 0, 1, 1);
     VARP(crosshairinfoenemys, 0, 1, 1);
+    VARP(gunwaithud, 0, 1, 1);
+    FVARP(gunwaithudscale, 0, 1.5f, 100.0f);
+    VARP(gunwaithudoffsetx, -400, 0, 400);
+
+    void drawhudbody(float x, float y, float sx, float sy, float ty)
+    {
+        glBegin(GL_TRIANGLE_STRIP);
+        glTexCoord2f(0, ty); glVertex2f(x    ,    y);
+        glTexCoord2f(1, ty); glVertex2f(x+sx,    y);
+        glTexCoord2f(0, 1);  glVertex2f(x    ,    y+sy);
+        glTexCoord2f(1, 1);  glVertex2f(x+sx,    y+sy);
+        glEnd();
+    }
 
     int selectcrosshair(float &r, float &g, float &b, int &w, int &h)
     {
@@ -3153,6 +3166,43 @@ namespace game
             if(isteam(((fpsent *)o)->team, d->team)) draw_text(((fpsent *)o)->name, w/2, h/3, 64, 64, 255);
             else if(crosshairinfoenemys && (m_teammode|| teamskins)) draw_text(((fpsent *)o)->name, w/2, h/3, 255, 64, 64);
             else if(crosshairinfoenemys) draw_text(((fpsent *)o)->name, w/2, h/3, 64, 255, 64);
+        }
+
+        if(gunwaithud)
+        {
+
+            glPushMatrix();
+            glScalef(h/1800.0f, h/1800.0f, 1);
+
+            float mwait = ((float)(lastmillis-d->lastaction)*(float)(lastmillis-d->lastaction))/((float)d->gunwait*(float)d->gunwait);
+            mwait = clamp(mwait, 0.f, 1.f);
+
+            static Texture *gunwaitft = NULL;
+            if (!gunwaitft) gunwaitft = textureload("packages/hud/gunwait_filled.png", 0, true, false);
+            int size = 128*gunwaithudscale;
+
+            float rw = ((float)w/((float)h/1800.f)), rh = 1800;
+            float scale = 1.2f*1.6f;
+            float x = (rw/scale)/2.f+gunwaithudoffsetx, y = (rh-size*2.f)/(scale*2.f);
+
+            if(mwait==1.0f) goto dontdraw;
+
+            glPushMatrix();
+            glScalef(scale, scale, 1);
+            glColor4f(1.0f, 1.0f, 1.0f, 0.5);
+
+            glBindTexture(GL_TEXTURE_2D, gunwaitft->id);
+
+            glBegin(GL_TRIANGLE_STRIP);
+            glTexCoord2f(0, 1-mwait); glVertex2f(x,      y+(1-mwait)*size);
+            glTexCoord2f(1, 1-mwait); glVertex2f(x+size, y+(1-mwait)*size);
+            glTexCoord2f(0, 1);       glVertex2f(x,      y+(1-mwait)*size+mwait*size);
+            glTexCoord2f(1, 1);       glVertex2f(x+size, y+(1-mwait)*size+mwait*size);
+            glEnd();
+
+            glPopMatrix();
+            dontdraw:
+            glPopMatrix();
         }
 
         if(crosshair!=1 && !editmode && !m_insta)
