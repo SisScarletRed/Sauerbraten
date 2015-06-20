@@ -3,7 +3,6 @@
 #include "game.h"
 #include "extinfo.h"
 #include "event.h"
-#include "geoip.h"
 #include "ipignore.h"
 
 struct serverinfo;
@@ -1183,7 +1182,12 @@ namespace whois
 
             if(found)
             {
-                defformatstring(line)("\f0%d.%d.%d.* (%s): \f3", whoisents[i].ip&0xFF, (whoisents[i].ip&0xFF00)>>8, (whoisents[i].ip&0xFF0000)>>16, GeoIP_country_name_by_ipnum());//geoip, endianswap(whoisents[i].ip)));
+                #ifndef QUED32
+                defformatstring(line)("\f0%d.%d.%d.* (%s): \f3", whoisents[i].ip&0xFF, (whoisents[i].ip&0xFF00)>>8, (whoisents[i].ip&0xFF0000)>>16, GeoIP_country_name_by_ipnum());
+                #else
+                defformatstring(line)("\f0%d.%d.%d.* (%s): \f3", whoisents[i].ip&0xFF, (whoisents[i].ip&0xFF00)>>8, (whoisents[i].ip&0xFF0000)>>16, GeoIP_country_name_by_ipnum(geoip, endianswap(whoisents[i].ip)));
+                #endif
+
                 loopvj(whoisents[i].names)
                 {
                     concatstring(line, whoisents[i].names[j]);
@@ -1223,7 +1227,11 @@ namespace whois
     ICOMMAND(whereis, "i", (const int *cn),
     {
         fpsent *d = game::getclient(*cn);
-        if(d) conoutf("%s(%d) connected from %s", d->name, d->clientnum, GeoIP_country_name_by_ipnum());//geoip, endianswap(d->extdata.data.ip)));
+        #ifndef QUED32
+        if(d) conoutf("%s(%d) connected from %s", d->name, d->clientnum, GeoIP_country_name_by_ipnum());
+        #else
+        if(d) conoutf("%s(%d) connected from %s", d->name, d->clientnum, GeoIP_country_name_by_ipnum(geoip, endianswap(d->extdata.data.ip)));
+        #endif
         else conoutf("\f3error: client \"cn %d\" not found!", *cn);
     });
     ICOMMAND(getclientip, "i", (const int *cn),

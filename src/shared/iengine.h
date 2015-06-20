@@ -683,3 +683,6 @@ extern void g3d_cursorpos(float &x, float &y);
 extern void g3d_resetcursor();
 extern void g3d_limitscale(float scale);
 
+#ifdef QUED32
+extern GeoIP *geoip;
+#endif

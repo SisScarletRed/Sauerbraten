@@ -3,7 +3,6 @@
 #include "engine.h"
 #include "extinfo.h"
 #include "game.h"
-#include "geoip.h"
 #include "SDL_thread.h"
 
 struct resolverthread
@@ -506,7 +505,11 @@ void checkresolver()
             {
                 si.resolved = RESOLVED;
                 si.address.host = addr.host;
-                si.countrycode = GeoIP_country_code_by_ipnum();//geoip, endianswap(si.address.host));
+                #ifndef QUED32
+                si.countrycode = GeoIP_country_code_by_ipnum();
+                #else
+                si.countrycode = GeoIP_country_code_by_ipnum(geoip, endianswap(si.address.host));
+                #endif
                 break;
             }
         }

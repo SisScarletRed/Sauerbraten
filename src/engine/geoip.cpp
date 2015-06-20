@@ -1,4 +1,5 @@
-#include "geoip.h"
+#ifndef QUED32
+#include "../engine/GeoIP.h"
 
 const char *GeoIP_country_code_by_ipnum() { return NULL; }
 const char *GeoIP_country_name_by_ipnum() { return NULL; }
@@ -63,3 +64,4 @@ char *GeoIP_num_to_addr(unsigned long ipnum)
     }
     return ret_str;
 }
+#endif

@@ -586,7 +586,6 @@ struct fpsstate
 #define MAXTEAMS 128
 
 #include "extinfo.h"
-#include "geoip.h"
 
 #define LAGMETERDATASIZE 300
 struct lagmeterdata

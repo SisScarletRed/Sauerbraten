@@ -1,3 +1,4 @@
+#ifndef QUED32
 #ifndef __GEOIP_H_
 #define __GEOIP_H_
 
@@ -9,3 +10,4 @@ extern unsigned long GeoIP_addr_to_num(const char *addr);
 extern char *GeoIP_num_to_addr(unsigned long ipnum);
 
 #endif // __GEOIP_H_
+#endif

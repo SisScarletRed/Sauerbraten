@@ -104,6 +104,10 @@ namespace game
     HVARP(ipignorecolor, 0, 0xC4C420, 0xFFFFFF);
     VARP(showspectatorip, 0, 0, 1);
 
+    #ifdef QUED32
+    VARP(showcountries, 0, 3, 5);
+    #endif // QUED32
+
     extern bool isduel(bool allowspec = false, int colors = 0);
     extern vector<fpsent *> players;
 
@@ -529,6 +533,24 @@ namespace game
                 g.poplist();
             }
 
+            #ifdef QUED32
+            if(showcountries)
+            {
+                g.pushlist();
+                g.text("country", fgcolor);
+                g.strut(7);
+                loopscoregroup(o,
+                {
+                    const char icon[MAXSTRLEN] = "";
+                    const char *countrycode = GeoIP_country_code_by_ipnum(geoip, endianswap(o->extdata.data.ip));
+                    const char *country = (showcountries&2) ? countrycode : (showcountries&4) ? GeoIP_country_name_by_ipnum(geoip, endianswap(o->extdata.data.ip)) : "";
+                    if(showcountries&1) formatstring(icon)("%s.png", countrycode);
+                    g.textf("%s", 0xFFFFFF, (showcountries&1) ? icon : NULL, NULL, country);
+                });
+                g.poplist();
+            }
+            #endif // QUED32
+
             if(multiplayer(false) || demoplayback)
             {
                 if(showpj)
@@ -623,6 +645,24 @@ namespace game
                     loopv(spectators) renderip(g, spectators[i]);
                     g.poplist();
                 }
+
+                #ifdef QUED32
+                if(showcountries)
+                {
+                    g.pushlist();
+                    g.text("country", 0xFFFF80);
+                    g.strut(7);
+                    loopv(spectators)
+                    {
+                        const char icon[MAXSTRLEN] = "";
+                        const char *countrycode = GeoIP_country_code_by_ipnum(geoip, endianswap(spectators[i]->extdata.data.ip));
+                        const char *country = (showcountries&2) ? countrycode : (showcountries&4) ? GeoIP_country_name_by_ipnum(geoip, endianswap(spectators[i]->extdata.data.ip)) : "";
+                        if(showcountries&1) formatstring(icon)("%s.png", countrycode);
+                        g.textf("%s", 0xFFFFFF, (showcountries&1) ? icon : NULL, NULL, country);
+                    };
+                    g.poplist();
+                }
+                #endif // QUED32
 
                 if(showping && (multiplayer(false) || demoplayback))
                 {

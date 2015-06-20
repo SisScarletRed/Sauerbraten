@@ -1296,6 +1296,10 @@ bool allow_draw()
 
 ullong input_nanos = 0;
 
+#ifdef QUED32
+GeoIP *geoip = NULL;
+#endif
+
 const char *serverextinfogui =
     "newgui serverextinfo [\n"
         "guiserverextinfo\n"
@@ -1631,6 +1635,12 @@ int main(int argc, char **argv)
     ipignore::startup();
     game::loadstats();
     whois::loadwhoisdb();
+
+    #ifdef QUED32
+    logoutf("init: GeoIP");
+    geoip = GeoIP_open(findfile("data/GeoIP.dat", "r"), 0);
+    if(!geoip) conoutf("\f3error: could not locate GeoIP.dat\n\tGeoIP disabled!");
+    #endif
 
     logoutf("init: mainloop");
 

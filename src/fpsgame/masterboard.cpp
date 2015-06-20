@@ -1,5 +1,4 @@
 #include "masterboard.h"
-#include "geoip.h"
 
 namespace game
 {
@@ -22,6 +21,9 @@ namespace master
     VARP(mastping, 0, 1, 1);
     VARP(mastspectators, 0, 1, 1);
     VARP(mastip, 0, 1, 1);
+    #ifdef QUED32
+    VARP(mastcountries, 0, 3, 5);
+    #endif // QUED32
 
     VARP(mastkick, 0, 1, 1);
     VARP(mastspec, 0, 1, 1);
@@ -299,6 +301,25 @@ namespace master
                 g->poplist();
             }
 
+            #ifdef QUED32
+            if(mastcountries)
+            {
+                g->space(1);
+                g->pushlist();
+                g->strut(7);
+                g->text("country", 0xA0A0A0);
+                loopscoregroup(o,
+                {
+                    const char icon[MAXSTRLEN] = "";
+                    const char *countrycode = GeoIP_country_code_by_ipnum(geoip, endianswap(o->extdata.data.ip));
+                    const char *country = (mastcountries&2) ? countrycode : (mastcountries&4) ? GeoIP_country_name_by_ipnum(geoip, endianswap(o->extdata.data.ip)) : "";
+                    if(mastcountries&1) formatstring(icon)("%s.png", countrycode);
+                    g->textf("%s", 0xFFFFFF, (mastcountries&1) ? icon : NULL, NULL, country);
+                });
+                g->poplist();
+            }
+            #endif // QUED32
+
             if(mastkick)
             {
                 g->pushlist();
@@ -426,6 +447,23 @@ namespace master
                     g->textf("%s", 0xFFFFFF, NULL, NULL, GeoIP_num_to_addr(endianswap(spectators[i]->extdata.data.ip)));
                 g->poplist();
             }
+
+            #ifdef QUED32
+            if(mastcountries)
+            {
+                g->pushlist();
+                g->text("country", 0xA0A0A0);
+                loopv(spectators)
+                {
+                    const char icon[MAXSTRLEN] = "";
+                    const char *countrycode = GeoIP_country_code_by_ipnum(geoip, endianswap(spectators[i]->extdata.data.ip));
+                    const char *country = (mastcountries&2) ? countrycode : (mastcountries&4) ? GeoIP_country_name_by_ipnum(geoip, endianswap(spectators[i]->extdata.data.ip)) : "";
+                    if(mastcountries&1) formatstring(icon)("%s.png", countrycode);
+                    g->textf("%s ", 0xFFFFFF, (mastcountries&1)? icon: NULL, NULL, country);
+                }
+                g->poplist();
+            }
+            #endif // QUED32
 
             if(mastkick)
             {

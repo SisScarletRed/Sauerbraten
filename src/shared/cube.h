@@ -56,9 +56,17 @@
 #include "ents.h"
 #include "command.h"
 
+#ifdef QUED32
+#include <GeoIP.h>
+#endif
+
 #include "iengine.h"
 #include "igame.h"
 #include "strtool.h"
+
+#ifndef QUED32
+#include "../engine/GeoIP.h"
+#endif
 
 #endif
 
