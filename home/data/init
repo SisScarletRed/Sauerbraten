@@ -6,17 +6,17 @@ execdir = [loopfiles f $arg1 $arg2 [exec (format "%1/%2.%3" $arg1 $f $arg2)]]
 execdir data/gamescripts cfg
 execdir home/packages/fonts cfg
 
+createine fixitpmc 0
+fixitpmcpm = 0
+addfixitpmc = [ addzip "models/fixit_hudguns" ]
+removefixitpmc = [ removezip "models/fixit_hudguns" ]
+updatefixitpmc = [ if $fixitpmc addfixitpmc removefixitpmc ]
+
 createine snoutrailgun 0
 snoutrailgunpm = 1
 addsnoutrailgun = [ addzip "models/snout_railgun" ]
 removesnoutrailgun = [ removezip "models/snout_railgun" ]
-updatesnoutrailgun = [ if $snoutrailgun [ addzip "models/snout_railgun" ] [ removezip "models/snout_railgun" ] ]
-
-createine ccsuperhero 0
-ccsuperheropm = 4
-addccsuperhero = [ addzip "models/cc_superhero_hudguns" ]
-removeccsuperhero = [ removezip "models/cc_superhero_hudguns" ]
-updateccsuperhero = [ if $ccsuperhero addccsuperhero removeccsuperhero ]
+updatesnoutrailgun = [ if $snoutrailgun addsnoutrailgun removesnoutrailgun ]
 
 createine inkyalien 0
 inkyalienpm = 3
@@ -25,6 +25,12 @@ removeinkyalien = [ removezip "models/inky_alien_hudguns" ]
 removeinkyalien = [ removezip "models/inky_alien_hudguns" ]
 updateinkyalien = [ if $inkyalien addinkyalien removeinkyalien ]
 
+createine ccsuperhero 0
+ccsuperheropm = 4
+addccsuperhero = [ addzip "models/cc_superhero_hudguns" ]
+removeccsuperhero = [ removezip "models/cc_superhero_hudguns" ]
+updateccsuperhero = [ if $ccsuperhero addccsuperhero removeccsuperhero ]
+
 createine transparentguns 0
 transparentgunspm = -1
 addtransparentguns = [ addzip "models/transparent_guns" ]
@@ -32,15 +38,17 @@ removetransparentguns = [ removezip "models/transparent_guns" ]
 updatetransparentguns = [ if $transparentguns addtransparentguns removetransparentguns ]
 
 playermodelchange = [
+	if (!= $playermodel $fixitpmc) removefixitpmc
 	if (!= $playermodel $snoutrailgunpm) removesnoutrailgun
-	if (!= $playermodel $ccsuperheropm) removeccsuperhero
 	if (!= $playermodel $inkyalienpm) removeinkyalien
+	if (!= $playermodel $ccsuperheropm) removeccsuperhero
 	
+	if (= $playermodel $fixitpmc) updatefixitpmc
 	if (= $playermodel $snoutrailgunpm) updatesnoutrailgun
-	if (= $playermodel $ccsuperheropm) updateccsuperhero
 	if (= $playermodel $inkyalienpm) updateinkyalien
+	if (= $playermodel $ccsuperheropm) updateccsuperhero
 	
-	if (&& (&& (|| (!= $playermodel $snoutrailgunpm) (! $snoutrailgun)) (|| (!= $playermodel $ccsuperheropm) (! $ccsuperhero))) (|| (!= $playermodel $inkyalienpm) (! $inkyalien))) [
+	if (&& (&& (&& (|| (!= $playermodel $snoutrailgunpm) (! $snoutrailgun)) (|| (!= $playermodel $ccsuperheropm) (! $ccsuperhero))) (|| (!= $playermodel $inkyalienpm) (! $inkyalien))) (|| (!= $playermodel $fixitpmcpm) (! $fixitpmc))) [
 		updatetransparentguns
 	] [
 		removetransparentguns
@@ -48,3 +56,14 @@ playermodelchange = [
 ]
 
 playermodelchange
+
+
+createine wwiiproj 0
+wwiiprojpm = -1
+addwwiiproj = [ addzip "models/wwii_projectiles" ]
+removewwiiproj = [ removezip "models/wwii_projectiles" ]
+updatewwiiproj = [ if $wwiiproj addwwiiproj removewwiiproj ]
+
+projchange = [
+	updatewwiiproj
+]
