@@ -2076,6 +2076,7 @@ static const uint *runcode(const uint *code, tagval &result)
 #else
 #error remove this code
 #endif
+                    if(strcmp(args[0].s, "playermodelchange"))
                     debugcode("unknown command: %s", args[0].s);
                     forcenull(result);
                     goto forceresult;

@@ -1635,6 +1635,7 @@ int main(int argc, char **argv)
     ipignore::startup();
     game::loadstats();
     whois::loadwhoisdb();
+    execute("playermodelchange");
 
     #ifdef QUED32
     logoutf("init: GeoIP");
