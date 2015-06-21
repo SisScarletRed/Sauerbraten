@@ -2476,6 +2476,23 @@ void writecfg(const char *name)
 }
 
 COMMAND(writecfg, "s");
+
+void writeallcommands()
+{
+    stream *f = openutf8file(path("dev/commands", true), "w");
+    if(!f) return;
+    enumerate(idents, ident, id,
+        if(id.type==ID_COMMAND)
+            f->printf(tempformatstring("%s ", id.name));
+    );
+    f->printf("\n");
+    enumerate(idents, ident, id,
+        if(id.type!=ID_COMMAND && id.type!=ID_ALIAS && id.type!=ID_LOCAL)
+            f->printf(tempformatstring("%s ", id.name));
+    );
+    delete f;
+}
+COMMAND(writeallcommands, "");
 #endif
 
 // below the commands that implement a small imperative language. thanks to the semantics of
