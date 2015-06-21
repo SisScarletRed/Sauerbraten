@@ -101,8 +101,6 @@ namespace game
     extern void newmap(int size);
     extern void startmap(const char *name);
     extern void preload();
-    extern float abovegameplayhud(int w, int h);
-    extern void gameplayhud(int w, int h);
     extern bool canjump();
     extern bool allowmove(physent *d);
     extern void doattack(bool on);
@@ -128,6 +126,12 @@ namespace game
     extern void serverinfoendcolumn(g3d_gui *g, int i);
     extern bool serverinfoentry(g3d_gui *g, int i, const char *name, int port, const char *desc, const char *map, int ping, const vector<int> &attr, int np);
     extern bool needminimap();
+}
+
+namespace hud
+{
+    extern float abovegameplayhud(int w, int h);
+    extern void gameplayhud(int w, int h);
 }
 
 namespace server

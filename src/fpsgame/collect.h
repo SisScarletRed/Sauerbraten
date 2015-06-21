@@ -453,7 +453,7 @@ struct collectclientmode : clientmode
             glScalef(2, 2, 1);
             draw_textf("%d", (x + HICON_SIZE + HICON_SPACE)/2, HICON_TEXTY/2, d->tokens);
             glPopMatrix();
-            drawicon(HICON_TOKEN, x, HICON_Y);
+            hud::drawicon(HICON_TOKEN, x, HICON_Y);
         }
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

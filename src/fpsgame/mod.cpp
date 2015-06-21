@@ -39,7 +39,7 @@ VARP(fragmsgposy, 0, 50, 1000);
 
 // FRAGMSG
 
-namespace game { extern int fragmsgfade; }
+namespace hud { extern int fragmsgfade; }
 
 void drawfragmsg(fpsent *d, int w, int h)
 {
@@ -96,8 +96,8 @@ void drawfragmsg(fpsent *d, int w, int h)
     msg2posx = msgiconposx+WEAP_ICON_SL+WEAP_ICON_SPACE;
 
     alpha = 255;
-    if(lastmillis-fragtime>fragmsgfade)
-        alpha = 255-(lastmillis-fragtime)+fragmsgfade;
+    if(lastmillis-fragtime>hud::fragmsgfade)
+        alpha = 255-(lastmillis-fragtime)+hud::fragmsgfade;
     alpha = max(alpha, 0.0f);
 
     glPushMatrix();
@@ -106,7 +106,7 @@ void drawfragmsg(fpsent *d, int w, int h)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(1, 1, 1, alpha/255);
     if(!suicide) draw_text(buf1, msg1posx, posy, 255, 255, 255, alpha);
-    drawicon(iconid, msgiconposx, posy+ICON_TEXT_DIFF, WEAP_ICON_SL);
+    hud::drawicon(iconid, msgiconposx, posy+ICON_TEXT_DIFF, WEAP_ICON_SL);
     draw_text(buf2, msg2posx, posy, 255, 255, 255, alpha);
     glPopMatrix();
 }

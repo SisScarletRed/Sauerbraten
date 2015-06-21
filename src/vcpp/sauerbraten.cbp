@@ -58,7 +58,7 @@
 				<Option object_output=".objs/client32" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="-t0 -w640 -h480 -qhome" />
+				<Option parameters="-t1 -qhome" />
 				<Compiler>
 					<Add option="-fomit-frame-pointer" />
 					<Add option="-O3" />
@@ -201,6 +201,7 @@
 			<Option compile="1" />
 			<Option weight="0" />
 		</Unit>
+		<Unit filename="../fpsgame/hud.cpp" />
 		<Unit filename="../fpsgame/ipbuf.h" />
 		<Unit filename="../fpsgame/ipignore.cpp" />
 		<Unit filename="../fpsgame/ipignore.h" />

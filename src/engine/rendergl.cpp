@@ -2502,11 +2502,8 @@ static void drawgamehud(int &roffset, int conw, int conh)
 }
 
 extern void drawskinrect(int x, int y, int w, int h, float alpha);
-namespace game
-{
-    extern int sehud;
-    extern bool demoplayback;
-}
+namespace hud { extern int sehud; }
+namespace game { extern bool demoplayback; }
 extern int hmapedit,
            gridpower,
            floatspeed,
@@ -2582,7 +2579,7 @@ void gl_drawhud(int w, int h)
 
     bool hasgamehud = false;
     int conw = int(w/conscale), conh = int(h/conscale), abovehud = conh - FONTH, limitgui = abovehud;
-    if(game::sehud && !mainmenu && game::player1->state != CS_EDITING && game::player1->state != CS_SPECTATOR && !m_check(game::gamemode, M_INSTA))
+    if(hud::sehud && !mainmenu && game::player1->state != CS_EDITING && game::player1->state != CS_SPECTATOR && !m_check(game::gamemode, M_INSTA))
             conw = int(w/conscale), conh = int(h/conscale), abovehud = h*2.48f - FONTH, limitgui = abovehud+200;
 
     glPushMatrix();
@@ -2749,7 +2746,7 @@ void gl_drawhud(int w, int h)
     {
         if(!hidestats)
         {
-            if(wallclock && !game::sehud)
+            if(wallclock && !hud::sehud)
             {
                 if(!walltime) { walltime = time(NULL); walltime -= totalmillis/1000; if(!walltime) walltime++; }
                 time_t walloffset = walltime + totalmillis/1000;
@@ -2836,8 +2833,8 @@ void gl_drawhud(int w, int h)
         if(hidestats || (!editmode && !showeditstats))
         {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            game::gameplayhud(w, h);
-            limitgui = abovehud = min(abovehud, int(conh*game::abovegameplayhud(w, h)));
+            hud::gameplayhud(w, h);
+            limitgui = abovehud = min(abovehud, int(conh*hud::abovegameplayhud(w, h)));
         }
 
         rendertexturepanel(w, h);

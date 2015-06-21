@@ -867,7 +867,6 @@ namespace game
     extern void killed(fpsent *d, fpsent *actor);
     extern void timeupdate(int timeremain);
     extern void msgsound(int n, physent *d = NULL);
-    extern void drawicon(int icon, float x, float y, float sz = 120);
     const char *mastermodecolor(int n, const char *unknown);
     const char *mastermodeicon(int n, const char *unknown);
 
@@ -908,7 +907,6 @@ namespace game
     static const int COLOR_AUTH   = 0xC040C0;
     static const int COLOR_ADMIN  = 0xFF8000;
 
-    extern int guiprivcolor(int priv);
     extern void renderplayerdisplay();
 
     extern bool sortupsidedown;
@@ -1052,6 +1050,12 @@ namespace game
     extern int chooserandomplayermodel(int seed);
     extern void swayhudgun(int curtime);
     extern vec hudgunorigin(int gun, const vec &from, const vec &to, fpsent *d);
+}
+
+namespace hud
+{
+    extern int guiprivcolor(int priv);
+    extern void drawicon(int icon, float x, float y, float sz = 120);
 }
 
 namespace server

@@ -324,7 +324,7 @@ namespace ipignore
     void startup()
     {
         execfile(CFG_FILE, false);
-        log = openutf8file(LOG_FILE, "ab");
+        log = openutf8file(LOG_FILE, "wb");
 
         if(!log)
             conoutf(CON_WARN, "couldn't open %s for writing", LOG_FILE);

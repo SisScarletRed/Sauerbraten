@@ -430,7 +430,7 @@ namespace extinfo
             {
                 int status = 0xFFFFFF;
                 bool isignored = ipignore::isignored(lastpreviewdata.players[i].ip);
-                if(lastpreviewdata.players[i].privilege) status = guiprivcolor(lastpreviewdata.players[i].privilege);
+                if(lastpreviewdata.players[i].privilege) status = hud::guiprivcolor(lastpreviewdata.players[i].privilege);
                 if(isignored)
                 {
                     g->pushlist();
@@ -546,7 +546,7 @@ namespace extinfo
             {
                 int status = 0xFFFFFF;
                 bool isignored = ipignore::isignored(lastpreviewdata.players[i].ip);
-                if(lastpreviewdata.players[i].privilege) status = guiprivcolor(lastpreviewdata.players[i].privilege);
+                if(lastpreviewdata.players[i].privilege) status = hud::guiprivcolor(lastpreviewdata.players[i].privilege);
                 if(isignored)
                 {
                     g->pushlist();

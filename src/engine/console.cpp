@@ -965,6 +965,12 @@ void keypress(int code, bool isdown, int cooked)
     }
 }
 
+char *getcurcommand()
+{
+    return commandmillis > 0 ? commandbuf : (char *)NULL;
+}
+ICOMMAND(getcurcommand, "", (), result(getcurcommand());)
+
 void clear_console()
 {
     keyms.clear();

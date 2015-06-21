@@ -498,7 +498,7 @@ namespace game
                 int status = o->state!=CS_DEAD ? scoreboardtextcolor : 0x606060;
                 if(o->privilege)
                 {
-                    status = guiprivcolor(o->privilege>=PRIV_ADMIN);
+                    status = hud::guiprivcolor(o->privilege>=PRIV_ADMIN);
                     if(o->state==CS_DEAD) status = (status>>1)&0x7F7F7F;
                 }
                 g.textf("%s ", status, NULL, NULL, colorname(o));
@@ -617,7 +617,7 @@ namespace game
                     fpsent *o = spectators[i];
                     int status = scoreboardtextcolor;
                     bool isignored = ipignore::isignored(o->clientnum, NULL);
-                    if(o->privilege) status = guiprivcolor(o->privilege>=PRIV_ADMIN);
+                    if(o->privilege) status = hud::guiprivcolor(o->privilege>=PRIV_ADMIN);
                     if((o==player1 && highlightscore) || isignored)
                     {
                         g.pushlist();
@@ -693,7 +693,7 @@ namespace game
                     fpsent *o = spectators[i];
                     int status = scoreboardtextcolor;
                     bool isignored = ipignore::isignored(o->clientnum, NULL);
-                    if(o->privilege) status = guiprivcolor(o->privilege);
+                    if(o->privilege) status = hud::guiprivcolor(o->privilege);
                     if((o==player1 && highlightscore) || isignored)
                     {
                         g.pushlist();
