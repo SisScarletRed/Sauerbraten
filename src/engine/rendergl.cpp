@@ -2361,45 +2361,25 @@ void crosshairbumpcheck()
     }
 }
 
-#define MAXCROSSHAIRS 4
-static Texture *crosshairs[MAXCROSSHAIRS] = { NULL, NULL, NULL, NULL };
+#define MAXCROSSHAIRS 9
 
-void loadcrosshair(const char *name, int i)
+const char *crosshairpath(int i, bool ishit = false)
 {
-    if(i < 0 || i >= MAXCROSSHAIRS) return;
-	crosshairs[i] = name ? textureload(name, 3, true) : notexture;
-    if(crosshairs[i] == notexture)
-    {
-        name = game::defaultcrosshair(i);
-        if(!name) name = "data/crosshair.png";
-        crosshairs[i] = textureload(name, 3, true);
-    }
+    static string path;
+    formatstring(path)("data/crosshairs/%s%s.png", game::getcrosshairname(i), ishit ? "_hit" : "");
+    return path;
 }
-
-void loadcrosshair_(const char *name, int *i)
-{
-	loadcrosshair(name, *i);
-}
-
-COMMANDN(loadcrosshair, loadcrosshair_, "si");
 
 ICOMMAND(getcrosshair, "i", (int *i),
 {
     const char *name = "";
     if(*i >= 0 && *i < MAXCROSSHAIRS)
     {
-        name = crosshairs[*i] ? crosshairs[*i]->name : game::defaultcrosshair(*i);
-        if(!name) name = "data/crosshair.png";
+        name = crosshairpath(*i);
+        if(!name) name = crosshairpath(0);
     }
     result(name);
 });
-
-void writecrosshairs(stream *f)
-{
-    loopi(MAXCROSSHAIRS) if(crosshairs[i] && crosshairs[i]!=notexture)
-        f->printf("loadcrosshair %s %d\n", escapestring(crosshairs[i]->name), i);
-    f->printf("\n");
-}
 
 string cursor_;
 void qsetcursor(const char *cur)
@@ -2419,6 +2399,7 @@ void drawcrosshair(int w, int h)
     if(!windowhit && (hidehud || mainmenu)) return; //(hidehud || player->state==CS_SPECTATOR || player->state==CS_DEAD)) return;
 
     float r = 1, g = 1, b = 1, cx = 0.5f, cy = 0.5f, chsize;
+    int index = game::selectcrosshair(r, g, b, w, h);
     Texture *crosshair;
     if(windowhit)
     {
@@ -2430,16 +2411,20 @@ void drawcrosshair(int w, int h)
     }
     else
     {
-        int index = game::selectcrosshair(r, g, b, w, h);
-        if(index < 0) return;
-        if(!crosshairfx) index = 0;
-        if(!crosshairfx || !crosshaircolors) r = g = b = 1;
-        crosshair = crosshairs[index];
-        if(!crosshair)
+        bool ishit = false;
+        if(index==-1) return;
+        if(!crosshairfx && index!=1)
         {
-            loadcrosshair(NULL, index);
-            crosshair = crosshairs[index];
+            index = 0;
+            r = g = b = 1;
         }
+        else if(index < -1)
+        {
+            ishit = true;
+            index = abs(index);
+        }
+        crosshair = textureload(crosshairpath(index, ishit), 3, true);
+        if(!crosshair) crosshair = notexture;
         chsize = crosshairsize*w/900.0f;
     }
     if(crosshair->type&Texture::ALPHA) glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

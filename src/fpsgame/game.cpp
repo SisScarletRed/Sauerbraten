@@ -1350,35 +1350,43 @@ namespace game
         return 0;
     }
 
+    VARP(weapcrosshair, 0, 1, 1);
     VARP(teamcrosshair, 0, 1, 1);
     VARP(hitcrosshair, 0, 425, 1000);
 
-    VARP(crosshaircolor, 0, 0xFFFFFF, 0xFFFFFF);
-
-    const char *defaultcrosshair(int index)
-    {
-        switch(index)
-        {
-            case 2: return "data/hit.png";
-            case 1: return "data/teammate.png";
-            default: return "data/crosshair.png";
-        }
-    }
-
     VARP(crosshairinfo, 0, 1, 1);
     VARP(crosshairinfoenemys, 0, 1, 1);
+    VARP(crosshaircolor, 0, 0xFFFFFF, 0xFFFFFF);
+
     VARP(gunwaithud, 0, 1, 1);
     FVARP(gunwaithudscale, 0, 1.5f, 100.0f);
     VARP(gunwaithudoffsetx, -400, 0, 400);
 
-    void drawhudbody(float x, float y, float sx, float sy, float ty)
+    SVARP(crosshairdefault, "dot");
+    SVARP(crosshairteam, "teammate");
+    SVARP(crosshairchainsaw, "brace");
+    SVARP(crosshairshotgun, "bounds");
+    SVARP(crosshairchaingun, "quadc");
+    SVARP(crosshairrocketlauncher, "laun");
+    SVARP(crosshairrifle, "circ");
+    SVARP(crosshairgrenadelauncher, "underc");
+    SVARP(crosshairpistol, "dot");
+
+    const char *getcrosshairname(int index)
     {
-        glBegin(GL_TRIANGLE_STRIP);
-        glTexCoord2f(0, ty); glVertex2f(x    ,    y);
-        glTexCoord2f(1, ty); glVertex2f(x+sx,    y);
-        glTexCoord2f(0, 1);  glVertex2f(x    ,    y+sy);
-        glTexCoord2f(1, 1);  glVertex2f(x+sx,    y+sy);
-        glEnd();
+        switch(index)
+        {
+            default:
+            case 0: return crosshairdefault;         break; // default
+            case 1: return crosshairteam;            break; // teammate
+            case 2: return crosshairchainsaw;        break; // chainsaw
+            case 3: return crosshairshotgun;         break; // shotgun
+            case 4: return crosshairchaingun;        break; // chaingun
+            case 5: return crosshairrocketlauncher;  break; // rocketlauncher
+            case 6: return crosshairrifle;           break; // rifle
+            case 7: return crosshairgrenadelauncher; break; // grenadelauncher
+            case 8: return crosshairpistol;          break; // pistol
+        }
     }
 
     int selectcrosshair(float &r, float &g, float &b, int &w, int &h)
@@ -1391,9 +1399,11 @@ namespace game
         b = ((crosshaircolor)&0xFF)/255.0f;
 
         int crosshair = 0;
+        if(weapcrosshair) crosshair = d->gunselect+2;
+        if(lasthit && lastmillis - lasthit < hitcrosshair) crosshair *= -1;
+
         dynent *o = intersectclosest(d->o, worldpos, d);
-        if(lasthit && lastmillis - lasthit < hitcrosshair) crosshair = 2;
-        else if(teamcrosshair)
+        if(teamcrosshair)
         {
             if(o && o->type==ENT_PLAYER && isteam(((fpsent *)o)->team, d->team))
             {
@@ -1426,23 +1436,21 @@ namespace game
             float scale = 1.2f*1.6f;
             float x = (rw/scale)/2.f+gunwaithudoffsetx, y = (rh-size*2.f)/(scale*2.f);
 
-            if(mwait==1.0f) goto dontdraw;
+            if(mwait==1.0f) goto retn;
 
             glPushMatrix();
             glScalef(scale, scale, 1);
             glColor4f(1.0f, 1.0f, 1.0f, 0.5);
-
             glBindTexture(GL_TEXTURE_2D, gunwaitft->id);
-
             glBegin(GL_TRIANGLE_STRIP);
             glTexCoord2f(0, 1-mwait); glVertex2f(x,      y+(1-mwait)*size);
             glTexCoord2f(1, 1-mwait); glVertex2f(x+size, y+(1-mwait)*size);
             glTexCoord2f(0, 1);       glVertex2f(x,      y+(1-mwait)*size+mwait*size);
             glTexCoord2f(1, 1);       glVertex2f(x+size, y+(1-mwait)*size+mwait*size);
             glEnd();
-
             glPopMatrix();
-            dontdraw:
+
+            retn:
             glPopMatrix();
         }
 
