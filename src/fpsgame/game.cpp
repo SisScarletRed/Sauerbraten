@@ -759,6 +759,7 @@ namespace game
 
     VARP(sendname, 0, 0, 1);
 
+    int lasttk;
     void killed(fpsent *d, fpsent *actor)
     {
         const char *you = "";
@@ -817,6 +818,7 @@ namespace game
             {
                 conoutf(contype, "\f6%s%s %s your teammate (%s)", indent, you, fragged, dname);
                 statslog[STATS_TKS]++;
+                lasttk = totalmillis;
                 if(autosorry && d->type==ENT_PLAYER)
                 {
                     defformatstring(sry)("%s %s", autosorrymsg, sendname ? cutclantags ? cutclantag(dname) : dname : "");

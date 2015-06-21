@@ -1,8 +1,7 @@
 #include "game.h"
 
 using namespace game;
-extern void drawfragmsg(fpsent *d, int w, int h),
-            drawacoloredquad(float x, float y, float w, float h,
+extern void drawacoloredquad(float x, float y, float w, float h,
                              uchar r, uchar g, uchar b, uchar a);
 extern bool guiisshowing();
 extern int getpacketloss(),
@@ -11,6 +10,7 @@ namespace game
 {
     extern double getweaponaccuracy(int gun, fpsent *f = NULL);
     extern bool isduel(bool allowspec = false, int colors = 0);
+    extern int lasttk;
 }
 VARP(newhud, 0, 1, 1);
 float staticscale = 0.33f;
@@ -182,7 +182,7 @@ namespace hud
     VARP(newhud_spectatorsize, 0, 5, 30);
     VARP(newhud_spectatorpos_x, 0, 500, 1000);
     VARP(newhud_spectatorpos_start_x, -1, 0, 1);
-    VARP(newhud_spectatorpos_y, 0, 110, 1000);
+    VARP(newhud_spectatorpos_y, 0, 93, 1000);
 
     VARP(newhud_itemsdisablewithgui, 0, 0, 1);
     VARP(newhud_itemsdisablewithscoreboard, 0, 1, 1);
@@ -224,7 +224,10 @@ namespace hud
     VARP(fragmsg, 0, 0, 1);
     VARP(fragmsgdisablewithgui, 0, 1, 1);
     VARP(fragmsgdisablewithscoreboard, 0, 1, 1);
-    VARP(fragmsgfade, 0, 1200, 10000);
+    VARP(fragmsgfade, 0, 1200, 10000);VARP(fragmsgdeaths, 0, 1, 1);
+    VARP(fragmsgname, 0, 1, 1);
+    VARP(fragmsgsize, 1, 4, 8);
+    VARP(fragmsgposy, 0, 150, 1000);
 
     VARP(sehud, 0, 1, 1);
     VARP(sehuddisablewithgui, 0, 1, 1);
@@ -274,6 +277,8 @@ namespace hud
     VARP(playerdisplaymaxteams, 1, stdmaxteams, 16);
     VARP(playerdisplaymaxnamelen, 4, stdmaxnamelen, MAXNAMELEN);
     VARP(playerdisplayalpha, 20, stdalpha, 0xFF);
+    VARP(playerdisplaydisablewithgui, 0, 1, 1);
+    VARP(playerdisplaydisablewithscoreboard, 0, 1, 1);
 
     static void playerdisplayreset()
     {
@@ -623,7 +628,7 @@ namespace hud
         int conw = int(w/staticscale), conh = int(h/staticscale);
 
         char buf[10];
-        int millis = max(game::maplimit-lastmillis, 0);
+        int millis = max(maplimit-lastmillis, 0);
         int secs = millis/1000;
         int mins = secs/60;
         secs %= 60;
@@ -863,7 +868,8 @@ namespace hud
         }
     }
 
-    void drawspectator(int w, int h) {
+    void drawspectator(int w, int h)
+    {
         fpsent *f = followingplayer();
         if(!f || player1->state!=CS_SPECTATOR) return;
 
@@ -1112,6 +1118,76 @@ namespace hud
                           255, 255, 255, 255);
             glPopMatrix();
         }
+        glPopMatrix();
+    }
+
+    void drawfragmsg(fpsent *d, int w, int h)
+    {
+        #define WEAP_ICON_SL 64
+        #define WEAP_ICON_SPACE 20
+        #define ICON_TEXT_DIFF 4
+
+        string buf1, buf2;
+        fpsent *att, *vic;
+        int fragtime, weapon,
+            msg1w, msg1h, msg2w, msg2h, total_width = 0,
+            msg1posx, msgiconposx, msg2posx, msgxoffset,
+            iconid;
+        float alpha;
+        bool suicide;
+
+        const float fragmsgscale = 0.35+fragmsgsize/8.0,
+                    posy = fragmsgposy*(h/fragmsgscale-WEAP_ICON_SL)/1000-ICON_TEXT_DIFF;
+
+        if(d->lastfragtime >= d->lastdeathtime)
+        {
+            att = d;
+            vic = d->lastvictim;
+            weapon = d->lastfragweapon;
+            fragtime = d->lastfragtime;
+        }
+        else
+        {
+            if(!fragmsgdeaths) return;
+            att = d->lastkiller;
+            vic = d;
+            weapon = d->lastdeathweapon;
+            fragtime = d->lastdeathtime;
+        }
+
+        suicide = (att==vic);
+        if(!fragmsgdeaths && suicide) return;
+        iconid = (weapon>-1) ? HICON_FIST+weapon : HICON_TOKEN;
+
+        if(!suicide)
+        {
+            sprintf(buf1, "%s", teamcolorname(att, (!fragmsgname && att==d) ? "You" : att->name));
+            text_bounds(buf1, msg1w, msg1h);
+            total_width += msg1w+WEAP_ICON_SPACE;
+        }
+
+        sprintf(buf2, "%s", teamcolorname(vic, (!fragmsgname && vic==d) ? "You" : vic->name));
+        text_bounds(buf2, msg2w, msg2h);
+        total_width += msg2w+WEAP_ICON_SL+WEAP_ICON_SPACE;
+
+        msgxoffset = (total_width*(1-fragmsgscale));
+        msg1posx = (w-total_width+msgxoffset)/(2*fragmsgscale);
+        msgiconposx = (suicide) ? msg1posx : msg1posx+msg1w+WEAP_ICON_SPACE;
+        msg2posx = msgiconposx+WEAP_ICON_SL+WEAP_ICON_SPACE;
+
+        alpha = 255;
+        if(lastmillis-fragtime>hud::fragmsgfade)
+            alpha = 255-(lastmillis-fragtime)+hud::fragmsgfade;
+        alpha = max(alpha, 0.0f);
+
+        glPushMatrix();
+        glScalef(fragmsgscale, fragmsgscale, 1);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(1, 1, 1, alpha/255);
+        if(!suicide) draw_text(buf1, msg1posx, posy, 255, 255, 255, alpha);
+        hud::drawicon(iconid, msgiconposx, posy+ICON_TEXT_DIFF, WEAP_ICON_SL);
+        draw_text(buf2, msg2posx, posy, 255, 255, 255, alpha);
         glPopMatrix();
     }
 
@@ -1706,6 +1782,68 @@ namespace hud
         glPopMatrix();
     }
 
+    VARP(notices, 0, 1, 1);
+    VARP(noticey, 0, 1400, 2000);
+    VARP(noticetitle, 0, 3000, 15000);
+    VARP(noticescale, 0, 10, 100);
+
+    bool dotkwarn()
+    {
+        if(totalmillis-lasttk < 3000) return true;
+        return false;
+    }
+
+    void rendernotice(const char *text, int w, int h, int line)
+    {
+        int tw, th;
+        int posx, posy;
+
+        text_bounds(text, tw, th);
+        posx = w*900/h;
+        posy = noticey;
+
+        glPushMatrix();
+        glTranslatef(posx, posy, 0);
+        glScalef(noticescale*0.1f, noticescale*0.1f, 1);
+        glTranslatef(-posx, -posy, 0);
+
+        draw_text(text, posx-tw/2, posy+line*th);
+        glPopMatrix();
+    }
+
+    void drawnotices(int w, int h)
+    {
+        if(guiisshowing() || getvar("scoreboard")) return;
+
+        glPushMatrix();
+        glScalef(h/1800.0f, h/1800.0f, 0);
+
+        int lines = 0;
+
+        if(maplimit-lastmillis <= noticetitle)
+        {
+            rendernotice(getclientmap(), w, h, lines);
+            lines++;
+        }
+        if(demoplayback)
+        {
+            rendernotice("Demoplayback in progress", w, h, lines);
+            lines++;
+        }
+        else if(player1->state==CS_SPECTATOR)
+        {
+            rendernotice("Write \"/spectator 0\" to join the game", w, h, lines);
+            lines++;
+        }
+        else if(dotkwarn())
+        {
+            rendernotice("\f3Do NOT kill teammates", w, h, lines);
+            lines++;
+        }
+
+        glPopMatrix();
+    }
+
     void gameplayhud(int w, int h)
     {
         if(player1->state==CS_SPECTATOR &&
@@ -1765,6 +1903,10 @@ namespace hud
         if(fragmsg && !(guiisshowing() && fragmsgdisablewithgui) && !(getvar("scoreboard") && fragmsgdisablewithscoreboard) && (d->lastvictim != NULL || d->lastkiller != NULL) & (lastmillis-d->lastfragtime < fragmsgfade + 255 || lastmillis-d->lastdeathtime < fragmsgfade + 255))
             drawfragmsg(d, w, h);
 
-        renderplayerdisplay(w, h, FONTH, w, h);
+        if(notices)
+            drawnotices(w, h);
+
+        if(!(guiisshowing() && playerdisplaydisablewithgui) && !(getvar("scoreboard") && playerdisplaydisablewithscoreboard))
+            renderplayerdisplay(w, h, FONTH, w, h);
     }
 }
