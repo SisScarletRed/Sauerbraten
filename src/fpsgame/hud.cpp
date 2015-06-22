@@ -994,15 +994,15 @@ namespace hud
                 ping;
             loopi(len)
             {
-                ch = min(100, d->lagdata.ping[i])/staticscale * lagometerheight/100.0;
+                ch = min(200, d->lagdata.ping[i])/staticscale * lagometerheight/200.0;
                 ping = d->lagdata.ping[i];
                 drawacoloredquad(xoff + (i*lagometercolsz)/staticscale,
                                  yoff + ypsz - ch,
                                  lagometercolsz/staticscale,
                                  ch,
-                                 ping >= 100 ? (GLubyte)255 : (GLubyte)0,
+                                 ping >= 200 ? (GLubyte)255 : (GLubyte)0,
                                  (GLubyte)0,
-                                 ping >= 100 ? (GLubyte)0 : (GLubyte)255,
+                                 ping >= 200 ? (GLubyte)0 : (GLubyte)255,
                                  (GLubyte)127);
             }
         }
