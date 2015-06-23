@@ -780,9 +780,6 @@ void setupscreen(int &usedcolorbits, int &useddepthbits, int &usedfsaa)
         hasbpp = SDL_VideoModeOK(scr_w, scr_h, colorbits, SDL_OPENGL|flags)==colorbits;
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-#if SDL_VERSION_ATLEAST(1, 2, 11)
-    if(vsync>=0) SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, vsync);
-#endif
     static int configs[] =
     {
         0x7, /* try everything */
@@ -1276,6 +1273,7 @@ VAR(numcpus, 1, 1, 16);
 ullong lastdraw = 0;
 ullong myframenanos = 0;
 
+QVARFP(framesperrefresh, "How many frames shall be rendered for everyone that is drawn", 1, 1, 18, if(!vsync) conoutf("Only makes changes with /vsync enabled!"));
 VARP(displayrefreshrate, 1, 60, 288);
 ullong refreshinterval()
 {
@@ -1290,7 +1288,7 @@ VARP(framenanofix, -10000, 500, 10000);
 bool allow_draw()
 {
     ullong __usenanos = myframenanos + framenanofix;
-    if((tick()-lastdraw) < (refreshinterval()-__usenanos)) return false;
+    if((tick()-lastdraw) < ((refreshinterval()/framesperrefresh)-__usenanos)) return false;
     return true;
 }
 

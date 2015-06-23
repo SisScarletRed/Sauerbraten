@@ -2647,11 +2647,12 @@ void gl_drawhud(int w, int h)
                     roffset += FONTH;
 
                     // Get other stats
-                    extern int displayrefreshrate;
+                    extern int displayrefreshrate,
+                               framesperrefresh;
                     extern ullong refreshinterval();
 
                     int tw5, th5;
-                    defformatstring(buf5)("Display: %d Hz, opt-rate: %d", displayrefreshrate, (int)(refreshinterval()-curframenanos[0]));
+                    defformatstring(buf5)("Display: %d Hz, opt-rate: %d", displayrefreshrate, (int)((refreshinterval()/framesperrefresh)-curframenanos[0]));
                     text_bounds(buf5, tw5, th5);
                     fpsstatlines++;
                     draw_textf(buf5, conw-tw5-10, conh-roffset);
