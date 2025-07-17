@@ -1,3 +1,5 @@
+I archived this because I have no fucking idea what happened 10 years ago, that's firmly in "swallowed by disassociation"-land.
+
 # Sauerbraten Client #
 
 This is a redevelopment of [QuEd](https://github.com/quality-edition/QuEd "Quality Edition"), but with many bug-fixes and crossing-out of unnecessary stuff.
