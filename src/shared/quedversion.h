@@ -3,7 +3,7 @@
 
 #define QUED_VERSION_MAJOR "0"
 #define QUED_VERSION_MINOR "1"
-#define QUED_VERSION_PATCH "22"
+#define QUED_VERSION_PATCH "4"
 #define QUED_VERSION_TYPE  "alpha"
 
 const char *getversionmajor()
